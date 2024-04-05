@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sélectionner un ID</title>
+</head>
+<body>
+    <h2>Sélectionnez un ID pour obtenir les probabilités de prédiction</h2>
+    <form action="/predict" method="get">
+        <select name="id">
+            {% for id in ids %}
+            <option value="{{ id }}">{{ id }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Prédire</button>
+    </form>
+</body>
+</html>
+ 
