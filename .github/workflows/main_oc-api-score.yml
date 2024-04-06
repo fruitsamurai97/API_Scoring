@@ -67,3 +67,9 @@ jobs:
           app-name: 'oc-api-score'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B9D837912A34DBFABE1D9F18BC191F9 }}
+
+
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
