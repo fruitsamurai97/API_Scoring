@@ -99,7 +99,9 @@ def explain():
         return jsonify({"erreur": "ID non trouvé"}), 404
 
     # Sélectionner la ligne correspondant à l'ID
-    ligne_client = df[df['SK_ID_CURR'] == id_client].drop(columns=['SK_ID_CURR'])
+    feats = [f for f in df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA",'CODE_GENDER']]
+    ligne_client = df[df['SK_ID_CURR'] == 100001]
+    ligne_client = ligne_client[feats].iloc[0]
     client_instance = np.array(ligne_client)
     exp= explainer.explain_instance(
         data_row=client_instance, 
