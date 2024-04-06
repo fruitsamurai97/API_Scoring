@@ -3,8 +3,11 @@ from joblib import load
 from flask import request, jsonify, render_template
 from app import app
 import lightgbm as lgb
-
-
+import dill 
+import lime 
+import lime.lime_tabular
+import numpy as np
+################
 import io
 from datetime import datetime, timedelta
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
@@ -42,22 +45,24 @@ try:
     stream.seek(0)  # Retour au début du stream
     modele = load(stream)
     
+
+    explainer_blob_name = 'lime_explainer_w2.pkl'
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=explainer_blob_name)
+    stream = io.BytesIO()
+    blob_client.download_blob().download_to_stream(stream)
+    stream.seek(0)  # Réinitialise le pointeur au début du stream pour la lecture
+    explainer = dill.load(stream) 
+
+
 except Exception as e:
     print(f"Une erreur s'est produite: {e}")
     traceback.print_exc()  # Imprime la pile d'appels pour aider au diagnostic
 
 
-# Charger le DataFrame
-#test_df = pd.read_csv("./Assets/test_w2_df.csv")
 feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA",'CODE_GENDER']]
-#modele = load("./Assets/Lgb_w2.joblib")
 df=test_df[feats]
 df=df.iloc[:1000]
-#ligne_client = df[df['SK_ID_CURR'] == 100001].drop(columns=['SK_ID_CURR'])
 
-# Prédiction
-#print(modele.predict_proba(ligne_client)[0])
-#proba_dict = {f"Classe {i}": prob for i, prob in enumerate(proba, start=1)}
 
 @app.route('/client',methods=["GET"])
 def get_client():
@@ -85,3 +90,20 @@ def predict():
 
     # Pour simplifier, retourner le résultat comme texte brut ou JSON
     return jsonify(proba_dict)
+
+@app.route("/explain",methods=["GET"])
+def explain():
+    id_client = request.args.get('id', default=None, type=int)
+
+    if id_client not in df['SK_ID_CURR'].values:
+        return jsonify({"erreur": "ID non trouvé"}), 404
+
+    # Sélectionner la ligne correspondant à l'ID
+    ligne_client = df[df['SK_ID_CURR'] == id_client].drop(columns=['SK_ID_CURR'])
+    client_instance = np.array(ligne_client)
+    exp= explainer.explain_instance(
+        data_row=client_instance, 
+        predict_fn=modele.predict_proba, 
+        num_features=5
+    )
+    return jsonify(exp.as_list())
