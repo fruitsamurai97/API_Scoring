@@ -53,10 +53,10 @@ feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_
 #modele = load("./Assets/Lgb_w2.joblib")
 df=test_df[feats]
 df=df.iloc[:1000]
-ligne_client = df[df['SK_ID_CURR'] == 100001].drop(columns=['SK_ID_CURR'])
+#ligne_client = df[df['SK_ID_CURR'] == 100001].drop(columns=['SK_ID_CURR'])
 
 # Prédiction
-print(modele.predict_proba(ligne_client)[0])
+#print(modele.predict_proba(ligne_client)[0])
 #proba_dict = {f"Classe {i}": prob for i, prob in enumerate(proba, start=1)}
 
 @app.route('/client',methods=["GET"])
@@ -69,7 +69,7 @@ def get_client():
 @app.route('/predict', methods=['GET'])
 def predict():
 
-    global modele  # Ajoutez cette ligne pour indiquer que modele est une variable globale
+    #global modele  # Ajoutez cette ligne pour indiquer que modele est une variable globale
 
     id_client = request.args.get('id', default=None, type=int)
 
