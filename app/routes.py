@@ -57,11 +57,16 @@ df=df.iloc[:1000]
 
 @app.route('/client',methods=["GET"])
 def get_client():
+
+
     ids = df["SK_ID_CURR"].unique().tolist() 
     return jsonify(ids)#render_template("select_id.html", ids=ids)
 
 @app.route('/predict', methods=['GET'])
 def predict():
+
+    global modele  # Ajoutez cette ligne pour indiquer que modele est une variable globale
+
     id_client = request.args.get('id', default=None, type=int)
 
     if id_client not in df['SK_ID_CURR'].values:
