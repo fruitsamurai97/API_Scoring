@@ -4,6 +4,7 @@ from flask import request, jsonify, render_template
 from app import app
 import lightgbm as lgb
 
+
 import io
 from datetime import datetime, timedelta
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
@@ -46,9 +47,6 @@ except Exception as e:
     traceback.print_exc()  # Imprime la pile d'appels pour aider au diagnostic
 
 
-
-
-
 # Charger le DataFrame
 #test_df = pd.read_csv("./Assets/test_w2_df.csv")
 feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA",'CODE_GENDER']]
@@ -57,16 +55,10 @@ df=test_df[feats]
 df=df.iloc[:1000]
 
 
-ligne_client = df[df['SK_ID_CURR'] == 100001].drop(columns=['SK_ID_CURR'])
-
-    # Prédiction
-print(modele.predict_proba(ligne_client)[0])
-
-
-@app.route('/')
-def home():
+@app.route('/client',methods=["GET"])
+def get_client():
     ids = df["SK_ID_CURR"].unique().tolist() 
-    return render_template("select_id.html", ids=ids)
+    return jsonify(ids)#render_template("select_id.html", ids=ids)
 
 @app.route('/predict', methods=['GET'])
 def predict():
