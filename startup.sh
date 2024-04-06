@@ -4,6 +4,6 @@
 # Active ton environnement virtuel ici si nécessaire
 # source /chemin/vers/monenv/bin/activate
 # Lance Gunicorn avec les paramètres appropriés
-gunicorn --bind=0.0.0.1 --timeout 600 app:app
+gunicorn --bind=0.0.0.0 --timeout 60000 app:app
 chmod +x startup.sh
   
