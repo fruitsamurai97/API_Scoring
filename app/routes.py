@@ -118,7 +118,10 @@ def get_info():
         return jsonify({"erreur": "ID non trouvé"}), 404
     col_sel=["CODE_GENDER", "AMT_INCOME_TOTAL", "AMT_CREDIT", "AMT_ANNUITY", "AMT_GOODS_PRICE", "DAYS_BIRTH"]
     ligne_client = df[df['SK_ID_CURR'] == id_client]
-    info_client = ligne_client[col_sel].iloc[0]
+    info_client = ligne_client[col_sel].iloc[0].to_list()
+    dict_client = dict(zip(col_sel,info_client))
+    # Conversion de numpy types en types Python standards pour la sérialisation JSON
+    #info_client = {key: (int(value) if type(value) == np.int64 else float(value) if type(value) == np.float64 else value) for key, value in info_client.items()}
 
-    return jsonify(info_client)
+    return jsonify(dict_client)
 
