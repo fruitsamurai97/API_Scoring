@@ -59,7 +59,7 @@ except Exception as e:
     traceback.print_exc()  # Imprime la pile d'appels pour aider au diagnostic
 
 
-feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA",'CODE_GENDER']]
+feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA"]]
 df=test_df[feats]
 df=df.iloc[:1000]
 
@@ -82,7 +82,7 @@ def predict():
         return jsonify({"erreur": "ID non trouvé"}), 404
 
     # Sélectionner la ligne correspondant à l'ID
-    ligne_client = df[df['SK_ID_CURR'] == id_client].drop(columns=['SK_ID_CURR'])
+    ligne_client = df[df['SK_ID_CURR'] == id_client].drop(columns=['SK_ID_CURR',"CODE_GENDER"])
 
     # Prédiction
     proba = modele.predict_proba(ligne_client)[0]
@@ -125,3 +125,11 @@ def get_info():
 
     return jsonify(dict_client)
 
+@app.route("/feature",methods=["GET"])
+def get_feature():
+    feature= request.args.get('feature', default=None, type=str)    
+    if feature not in df.columns:
+        return({"erreur":f"{feature} non trouvé"}),400
+        
+    col_feature = df[feature].tolist()
+    return jsonify(col_feature)
