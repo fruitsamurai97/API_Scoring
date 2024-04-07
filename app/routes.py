@@ -110,3 +110,15 @@ def explain():
     )
     return jsonify(exp.as_list())
 
+
+@app.route("/info",methods=["GET"])
+def get_info():
+    id_client = request.args.get('id', default=None, type=int)
+    if id_client not in df['SK_ID_CURR'].values:
+        return jsonify({"erreur": "ID non trouvé"}), 404
+    col_sel=["CODE_GENDER", "AMT_INCOME_TOTAL", "AMT_CREDIT", "AMT_ANNUITY", "AMT_GOODS_PRICE", "DAYS_BIRTH"]
+    ligne_client = df[df['SK_ID_CURR'] == id_client]
+    info_client = ligne_client[col_sel].iloc[0]
+
+    return jsonify(info_client)
+
