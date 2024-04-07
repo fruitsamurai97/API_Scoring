@@ -100,7 +100,7 @@ def explain():
 
     # Sélectionner la ligne correspondant à l'ID
     feats = [f for f in df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA",'CODE_GENDER']]
-    ligne_client = df[df['SK_ID_CURR'] == 100001]
+    ligne_client = df[df['SK_ID_CURR'] == id_client]
     ligne_client = ligne_client[feats].iloc[0]
     client_instance = np.array(ligne_client)
     exp= explainer.explain_instance(
@@ -109,3 +109,4 @@ def explain():
         num_features=5
     )
     return jsonify(exp.as_list())
+
