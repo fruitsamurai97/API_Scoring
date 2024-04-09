@@ -28,7 +28,7 @@ try:
     blob_service_client = BlobServiceClient.from_connection_string(connect_str)
     
     # Chargement du DataFrame depuis le blob
-    test_df_name = "test_w2_df.csv"
+    test_df_name = "test_new.csv"
     sas_test = generate_blob_sas(account_name=account_name,
                                 container_name=container_name,
                                 blob_name=test_df_name,
@@ -38,7 +38,7 @@ try:
     sas_test_url = f'https://{account_name}.blob.core.windows.net/{container_name}/{test_df_name}?{sas_test}'
     test_df = pd.read_csv(sas_test_url)
     # Chargement du modèle depuis le blob
-    model_blob_name = "Lgb_w2.joblib"
+    model_blob_name = "lgb_opt.joblib"
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=model_blob_name)
     stream = io.BytesIO()
     blob_client.download_blob().download_to_stream(stream)
@@ -46,7 +46,7 @@ try:
     modele = load(stream)
     
 
-    explainer_blob_name = 'lime_explainer_w2.pkl'
+    explainer_blob_name = 'lime_explainer_new.pkl'
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=explainer_blob_name)
     stream = io.BytesIO()
     blob_client.download_blob().download_to_stream(stream)
@@ -59,7 +59,7 @@ except Exception as e:
     traceback.print_exc()  # Imprime la pile d'appels pour aider au diagnostic
 
 
-feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index',"IF_0_CREDIT_IS_OKAY","PAYBACK_PROBA"]]
+feats = [f for f in test_df.columns if f not in ['TARGET','SK_ID_BUREAU','SK_ID_PREV','index']]
 df=test_df[feats]
 df=df.iloc[:1000]
 
