@@ -7,7 +7,6 @@ This repository contains the Fast API for predicting the class membership probab
 - `app`: This directory contains the Flask app.
   - `__init__.py`: Initialization file for the Flask application.
   - `routes.py`: Contains all the routes/endpoints for the API.
-  - `templates`: Contains HTML templates for rendering views.
 - `tests`: Contains tests for the application routes.
   - `test_routes`: Test cases for routes functionality.
 - `Azure_container_key.txt`: Contains the Azure container access key.
@@ -57,17 +56,6 @@ Below is a brief overview of the functions defined in `routes.py`:
 - `get_info()`: Serves the `/info` endpoint to provide detailed client information.
 - `get_feature()`: Serves the `/feature` endpoint to provide feature values across the dataset.
 
-For more detailed information about each function, refer to the comments and docstrings in `routes.py`.
 
-## Setup and Installation
 
-(Here you would provide detailed instructions on how to set up and run the application, including installing dependencies via `requirements.txt`, setting up environment variables for the Azure access key, etc.)
-
-## Testing
-
-(Describe how to run the tests for the API, possibly with commands and expected outcomes.)
-
-## Contributions
-
-(If this is an open project, describe how others can contribute, along with any coding standards or pull request requirements you have.)
 
